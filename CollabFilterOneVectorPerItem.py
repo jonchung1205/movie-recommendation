@@ -9,6 +9,7 @@ Scroll down to __main__ to see a usage example.
 # Make sure you use the autograd version of numpy (which we named 'ag_np')
 # to do all the loss calculations, since automatic gradients are needed
 import autograd.numpy as ag_np
+import numpy as np
 
 # Use helper packages
 from AbstractBaseCollabFilterSGD import AbstractBaseCollabFilterSGD
@@ -190,3 +191,13 @@ if __name__ == '__main__':
     check_shapes(train_tuple, name="train")
     check_shapes(valid_tuple, name="valid")
     check_shapes(test_tuple, name="test")
+    
+    # Create the model and initialize its parameters
+    # to have right scale as the dataset (right num users and items)
+    model = CollabFilterOneVectorPerItem(
+        n_epochs=10, batch_size=10000, step_size=0.1,
+        n_factors=2, alpha=0.0)
+    model.init_parameter_dict(n_users, n_items, train_tuple)
+
+    # Fit the model with SGD
+    model.fit(train_tuple, valid_tuple)
